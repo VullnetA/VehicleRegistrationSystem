@@ -35,6 +35,21 @@ namespace Vehicle_Registration_System.Services.Implementations
             return await _vehicleRepository.CountByBrand(manufacturer);
         }
 
+        public async Task<long> CountByCategory(string category)
+        {
+            return await _vehicleRepository.CountByCategory(category);
+        }
+
+        public async Task<long> CountByFuelType(string fuel)
+        {
+            return await _vehicleRepository.CountByFuelType(fuel);
+        }
+
+        public async Task<long> CountByYear(int year)
+        {
+            return await _vehicleRepository.CountByYear(year);
+        }
+
         public async Task<long> CountRegistered()
         {
             return await _vehicleRepository.CountRegistered();

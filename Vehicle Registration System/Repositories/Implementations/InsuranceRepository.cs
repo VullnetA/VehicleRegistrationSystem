@@ -62,6 +62,13 @@ namespace Vehicle_Registration_System.Repositories.Implementations
                                  .FirstOrDefaultAsync(i => i.Id == id) ?? new Insurance();
         }
 
+        public async Task<Insurance> FindInsuranceByVehicleId(int vehicleId)
+        {
+            return await _context.Insurances
+                                 .Include(i => i.Vehicle)
+                                 .ThenInclude(v => v.Owner)
+                                 .FirstOrDefaultAsync(i => i.Vehicle.Id == vehicleId) ?? new Insurance();
+        }
 
         public async Task<IEnumerable<Insurance>> GetAllInsurances()
         {

@@ -54,7 +54,6 @@ namespace Vehicle_Registration_System.Repositories.Implementations
                                  .ToListAsync();
         }
 
-
         public async Task<Vehicle> GetVehicleById(int id)
         {
             var vehicle = await _context.Vehicles
@@ -62,7 +61,6 @@ namespace Vehicle_Registration_System.Repositories.Implementations
                                         .FirstOrDefaultAsync(v => v.Id == id);
             return vehicle ?? new Vehicle();
         }
-
 
         public async Task UpdateVehicle(EditVehicle edit, int id)
         {
@@ -86,7 +84,6 @@ namespace Vehicle_Registration_System.Repositories.Implementations
                                  .Where(v => v.OwnerId == ownerId)
                                  .ToListAsync();
         }
-
 
         public async Task<IEnumerable<Vehicle>> FindByYear(int year)
         {
@@ -126,7 +123,6 @@ namespace Vehicle_Registration_System.Repositories.Implementations
                                  .ToListAsync();
         }
 
-
         public async Task<long> CountByBrand(string manufacturer)
         {
             return await _context.Vehicles
@@ -156,7 +152,6 @@ namespace Vehicle_Registration_System.Repositories.Implementations
                                  .CountAsync(v => v.Transmission == transmissionEnum);
         }
 
-
         public async Task<Vehicle> FindByLicensePlate(string licensePlate)
         {
             return await _context.Vehicles
@@ -164,11 +159,38 @@ namespace Vehicle_Registration_System.Repositories.Implementations
                                  .FirstOrDefaultAsync(v => v.LicensePlate.Equals(licensePlate));
         }
 
-
         public async Task<bool> CheckRegistration(int id)
         {
             return await _context.Vehicles
                          .AnyAsync(v => v.Id == id && v.ExpirationDate > DateTime.UtcNow);
+        }
+
+        public async Task<long> CountByFuelType(string fuel)
+        {
+            if (!Enum.TryParse<Fuel>(fuel, out var fuelEnum))
+            {
+                return 0;
+            }
+
+            return await _context.Vehicles
+                                 .CountAsync(v => v.Fuel == fuelEnum);
+        }
+
+        public async Task<long> CountByYear(int year)
+        {
+            return await _context.Vehicles
+                                 .CountAsync(v => v.Year.Equals(year));
+        }
+
+        public async Task<long> CountByCategory(string category)
+        {
+            if (!Enum.TryParse<Category>(category, out var categoryEnum))
+            {
+                return 0;
+            }
+
+            return await _context.Vehicles
+                                 .CountAsync(v => v.Category == categoryEnum);
         }
     }
 }

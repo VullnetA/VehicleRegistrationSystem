@@ -51,6 +51,20 @@ namespace Vehicle_Registration_System.Controllers
             return Ok(response);
         }
 
+        [HttpGet("/insurance/vehicle/{id}")]
+        //[Authorize]
+        public async Task<ActionResult<Insurance>> GetInsuranceByVehicleId(int id)
+        {
+            if (_memoryCache.TryGetValue($"InsuranceVehicle_{id}", out Insurance insurance))
+            {
+                return Ok(insurance);
+            }
+
+            var response = await _insuranceService.FindInsuranceByVehicleId(id);
+            _memoryCache.Set($"InsuranceVehicle_{id}", response, TimeSpan.FromMinutes(10));
+            return Ok(response);
+        }
+
         [HttpPost]
         //[Authorize]
         public async Task<ActionResult> AddInsurance(MakeInsurance make)

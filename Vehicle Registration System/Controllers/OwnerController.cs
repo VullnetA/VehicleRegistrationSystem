@@ -117,5 +117,19 @@ namespace Vehicle_Registration_System.Controllers
             _memoryCache.Set($"LicensesByCity_{placeOfBirth}", response, TimeSpan.FromMinutes(10));
             return Ok(response);
         }
+
+        [HttpGet("/searchByName/{name}")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<OwnerDto>>> GetOwnersByName(string name)
+        {
+            if (_memoryCache.TryGetValue($"OwnersByName_{name}", out IEnumerable<OwnerDto> owners))
+            {
+                return Ok(owners);
+            }
+
+            var response = await _ownerService.GetOwnersByName(name);
+            _memoryCache.Set($"OwnersByName_{name}", response, TimeSpan.FromMinutes(10));
+            return Ok(response);
+        }
     }
 }

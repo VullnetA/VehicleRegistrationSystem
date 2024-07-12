@@ -16,6 +16,9 @@ namespace Vehicle_Registration_System.Services.Interfaces
         Task<IEnumerable<VehicleDto>> FindByFuelType(string fuel);
         Task<IEnumerable<VehicleDto>> FindByBrand(string manufacturer);
         Task<long> CountByBrand(string manufacturer);
+        Task<long> CountByFuelType(string fuel);
+        Task<long> CountByYear(int year);
+        Task<long> CountByCategory(string category);
         Task<long> CountUnregistered();
         Task<long> CountRegistered();
         Task<long> CountTransmission(string transmission);

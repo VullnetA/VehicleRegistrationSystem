@@ -88,5 +88,12 @@ namespace Vehicle_Registration_System.Repositories.Implementations
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<IEnumerable<Owner>> GetOwnersByName(string name)
+        {
+            return await _context.Owners
+                                 .Where(o => o.FirstName.Contains(name) || o.LastName.Contains(name))
+                                 .ToListAsync();
+        }
     }
 }
