@@ -166,6 +166,48 @@ namespace Vehicle_Registration_System.Controllers
             return Ok(response);
         }
 
+        [HttpGet("/countbyfueltype/{fuel}")]
+        [Authorize]
+        public async Task<ActionResult<long>> CountVehiclesByFuelType(string fuel)
+        {
+            if (_memoryCache.TryGetValue($"CountByFuelType_{fuel}", out long count))
+            {
+                return Ok(count);
+            }
+
+            var response = await _vehicleService.CountByFuelType(fuel);
+            _memoryCache.Set($"CountByFuelType_{fuel}", response, TimeSpan.FromMinutes(10));
+            return Ok(response);
+        }
+
+        [HttpGet("/countbyyear/{year}")]
+        [Authorize]
+        public async Task<ActionResult<long>> CountVehiclesByYear(int year)
+        {
+            if (_memoryCache.TryGetValue($"CountByYear_{year}", out long count))
+            {
+                return Ok(count);
+            }
+
+            var response = await _vehicleService.CountByYear(year);
+            _memoryCache.Set($"CountByYear_ {year}", response, TimeSpan.FromMinutes(10));
+            return Ok(response);
+        }
+
+        [HttpGet("/countbycategory/{category}")]
+        [Authorize]
+        public async Task<ActionResult<long>> CountVehiclesByCategory(string category)
+        {
+            if (_memoryCache.TryGetValue($"CountByCategory_{category}", out long count))
+            {
+                return Ok(count);
+            }
+
+            var response = await _vehicleService.CountByCategory(category);
+            _memoryCache.Set($"CountByCategory_{category}", response, TimeSpan.FromMinutes(10));
+            return Ok(response);
+        }
+
         [HttpGet("/countunregistered")]
         [Authorize]
         public async Task<ActionResult<long>> CountUnregisteredVehicles()

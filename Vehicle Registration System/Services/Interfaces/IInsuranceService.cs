@@ -7,6 +7,7 @@ namespace Vehicle_Registration_System.Services.Interfaces
     {
         Task<IEnumerable<InsuranceDto>> GetAllInsurances();
         Task<InsuranceDto> FindInsuranceById(int id);
+        Task<InsuranceDto> FindInsuranceByVehicleId(int id);
         Task AddInsurance(MakeInsurance make);
         Task UpdateInsurance(EditInsurance edit, int id);
         Task DeleteInsurance(int id);

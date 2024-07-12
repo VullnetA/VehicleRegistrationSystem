@@ -65,6 +65,16 @@ namespace Vehicle_Registration_System.Services.Implementations
             return response;
         }
 
+        public async Task<InsuranceDto> FindInsuranceByVehicleId(int id)
+        {
+            var insurance = await _insuranceRepository.FindInsuranceByVehicleId(id);
+
+            InsuranceDto insuranceDto = new InsuranceDto();
+
+            var response = _mapper.Map(insurance, insuranceDto);
+            return response;
+        }
+
         public async Task<IEnumerable<InsuranceDto>> GetAllInsurances()
         {
             var insurances = await _insuranceRepository.GetAllInsurances();

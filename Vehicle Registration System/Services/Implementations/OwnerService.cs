@@ -77,6 +77,18 @@ namespace Vehicle_Registration_System.Services.Implementations
             return response;
         }
 
+        public async Task<IEnumerable<OwnerDto>> GetOwnersByName(string name)
+        {
+            var owners = await _ownerRepository.GetOwnersByName(name);
+            var response = owners?.Select(element =>
+            {
+                OwnerDto ownerDto = new OwnerDto();
+
+                return _mapper.Map(element, ownerDto);
+            });
+            return response;
+        }
+
         public async Task UpdateOwner(EditOwner edit, int id)
         {
             await _ownerRepository.UpdateOwner(edit, id);
