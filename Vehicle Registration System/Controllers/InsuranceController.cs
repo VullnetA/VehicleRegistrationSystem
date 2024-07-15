@@ -24,7 +24,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Insurance>>> GetAllInsurances()
         {
             if (_memoryCache.TryGetValue("AllInsurances", out IEnumerable<Insurance> insurances))
@@ -38,7 +38,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/insurance/{id}")]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult<Insurance>> GetInsuranceById(int id)
         {
             if (_memoryCache.TryGetValue($"Insurance_{id}", out Insurance insurance))
@@ -52,7 +52,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/insurance/vehicle/{id}")]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult<Insurance>> GetInsuranceByVehicleId(int id)
         {
             if (_memoryCache.TryGetValue($"InsuranceVehicle_{id}", out Insurance insurance))
@@ -66,7 +66,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpPost]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult> AddInsurance(MakeInsurance make)
         {
             await _insuranceService.AddInsurance(make);
@@ -75,7 +75,7 @@ namespace Vehicle_Registration_System.Controllers
 
 
         [HttpDelete("/insurance/{id}")]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult> DeleteInsurance(int id)
         {
             await _insuranceService.DeleteInsurance(id);
@@ -83,7 +83,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/count")]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult<long>> CountInsurances()
         {
             if (_memoryCache.TryGetValue("CountInsurances", out long count))
@@ -97,7 +97,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/expiredinsurances")]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Vehicle>>> FindExpiredInsurances()
         {
             if (_memoryCache.TryGetValue("ExpiredInsurances", out IEnumerable<Vehicle> expiredInsurances))
@@ -111,7 +111,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpPut("/insurance/{id}")]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult> UpdateInsurance(EditInsurance edit, int id)
         {
             await _insuranceService.UpdateInsurance(edit, id);
