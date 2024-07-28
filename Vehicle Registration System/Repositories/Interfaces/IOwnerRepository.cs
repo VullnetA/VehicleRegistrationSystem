@@ -8,7 +8,7 @@ namespace Vehicle_Registration_System.Repositories.Interfaces
         Task<IEnumerable<Owner>> GetAllOwners();
         Task<Owner> GetOwnerById(int id);
         Task<IEnumerable<Owner>> GetOwnersByName(string name);
-        Task AddOwner(InputOwner input);
+        Task<Owner> AddOwner(InputOwner input);
         Task UpdateOwner(EditOwner edit, int id);
         Task DeleteOwner(int id);
         Task<IEnumerable<Owner>> FindOwnerByVehicle(string manufacturer, string model);

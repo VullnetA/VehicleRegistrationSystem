@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using System.Security.Claims;
 using Vehicle_Registration_System.DTOs;
 using Vehicle_Registration_System.Models;
 using Vehicle_Registration_System.Repositories.Implementations;
 using Vehicle_Registration_System.Repositories.Interfaces;
+using Vehicle_Registration_System.Services.Implementations;
 using Vehicle_Registration_System.Services.Interfaces;
 
 namespace Vehicle_Registration_System.Controllers
@@ -14,13 +17,18 @@ namespace Vehicle_Registration_System.Controllers
     public class OwnerController : ControllerBase
     {
         private readonly IOwnerService _ownerService;
+        private readonly IVehicleService _vehicleService;
         private readonly IMemoryCache _memoryCache;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-
-        public OwnerController(IOwnerService ownerService, IMemoryCache memoryCache)
+        public OwnerController(IOwnerService ownerService, IVehicleService vehicleService, IMemoryCache memoryCache, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager) // Change IdentityUser to ApplicationUser
         {
             _ownerService = ownerService;
+            _vehicleService = vehicleService;
             _memoryCache = memoryCache;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         [HttpGet]
@@ -55,9 +63,29 @@ namespace Vehicle_Registration_System.Controllers
         [Authorize]
         public async Task<ActionResult> AddOwner(InputOwner request)
         {
-            await _ownerService.AddOwner(request);
+            var owner = await _ownerService.AddOwner(request);
 
-            return Ok();
+            var user = new ApplicationUser
+            {
+                Email = request.Email,
+                UserName = request.Email,
+                OwnerId = owner.Id
+            };
+
+            var result = await _userManager.CreateAsync(user, request.Password);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            if (!await _roleManager.RoleExistsAsync("Owner"))
+            {
+                await _roleManager.CreateAsync(new IdentityRole("Owner"));
+            }
+            await _userManager.AddToRoleAsync(user, "Owner");
+
+            return Ok(new { OwnerId = owner.Id });
         }
 
         [HttpDelete("/owner/{id}")]
@@ -70,7 +98,7 @@ namespace Vehicle_Registration_System.Controllers
 
         [HttpPut("/owner/{id}")]
         [Authorize]
-        public async Task<ActionResult> UpdateOwner (EditOwner editOwner, int id)
+        public async Task<ActionResult> UpdateOwner(EditOwner editOwner, int id)
         {
             await _ownerService.UpdateOwner(editOwner, id);
             return Ok();
