@@ -1,20 +1,25 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
 using Vehicle_Registration_System.Data;
 using Vehicle_Registration_System.DTOs;
+using Vehicle_Registration_System.Models;
 using Vehicle_Registration_System.Services.AuthenticationService;
 
 namespace Vehicle_Registration_System.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-
         private readonly AppDbContext _context;
         private readonly TokenService _tokenService;
 
-        public AuthController(UserManager<IdentityUser> userManager,
+        public AuthController(UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             AppDbContext context,
             TokenService tokenService)
@@ -35,7 +40,7 @@ namespace Vehicle_Registration_System.Controllers
                 return BadRequest("User already exists");
             }
 
-            var user = new IdentityUser
+            var user = new ApplicationUser
             {
                 Email = request.Email,
                 UserName = request.Email
@@ -85,22 +90,29 @@ namespace Vehicle_Registration_System.Controllers
 
             await _userManager.ResetAccessFailedCountAsync(managedUser);
 
-            var userInDb = _context.Users.FirstOrDefault(u => u.Email == request.Email);
+            var userInDb = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email) as ApplicationUser;
             if (userInDb is null)
             {
                 return Unauthorized();
             }
 
             var accessToken = await _tokenService.CreateToken(userInDb);
+            var roles = await _userManager.GetRolesAsync(userInDb);
             await _context.SaveChangesAsync();
 
-            return Ok(new AuthResponseDTO
+            var response = new AuthResponseDTO
             {
                 UserId = userInDb.Id,
                 Username = userInDb.UserName,
                 Email = userInDb.Email,
                 Token = accessToken,
-            });
+                Roles = roles.ToList(),
+                OwnerId = userInDb.OwnerId
+            };
+
+            Console.WriteLine("Authentication successful. Returning response: " + JsonConvert.SerializeObject(response));
+
+            return Ok(response);
         }
 
         [HttpPost("role")]

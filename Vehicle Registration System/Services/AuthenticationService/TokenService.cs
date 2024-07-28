@@ -3,20 +3,26 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Vehicle_Registration_System.Models;
+using Microsoft.Extensions.Configuration;
+using Vehicle_Registration_System.DTOs;
 
 namespace Vehicle_Registration_System.Services.AuthenticationService
 {
     public class TokenService
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _configuration;
 
-        public TokenService(UserManager<IdentityUser> userManager)
+        public TokenService(UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
             _userManager = userManager;
+            _configuration = configuration;
         }
 
         private const int ExpirationMinutes = 60;
-        public async Task<string> CreateToken(IdentityUser user)
+
+        public async Task<string> CreateToken(ApplicationUser user)
         {
             var expiration = DateTime.UtcNow.AddMinutes(ExpirationMinutes);
             var roles = await _userManager.GetRolesAsync(user);
@@ -30,47 +36,29 @@ namespace Vehicle_Registration_System.Services.AuthenticationService
             return tokenHandler.WriteToken(token);
         }
 
-        private JwtSecurityToken CreateJwtToken(List<Claim> claims, SigningCredentials credentials,
-            DateTime expiration) =>
+        private JwtSecurityToken CreateJwtToken(List<Claim> claims, SigningCredentials credentials, DateTime expiration) =>
             new JwtSecurityToken(
-                issuer: "MyIssuer",
-                audience: "MyAudience",
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
                 expires: expiration,
                 claims: claims,
                 signingCredentials: credentials
             );
 
-        private List<Claim> CreateClaims(IdentityUser user, IList<string> roles)
+        private List<Claim> CreateClaims(ApplicationUser user, IList<string> roles)
         {
-            try
+            return new List<Claim>
             {
-                var claims = new List<Claim>
-                {
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(ClaimTypes.Name, user.UserName),
-                };
-
-                foreach (var role in roles)
-                {
-                    claims.Add(new Claim(ClaimTypes.Role, role));
-                }
-
-                return claims;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim("OwnerId", user.OwnerId.ToString() ?? "")
+            }.Concat(roles.Select(role => new Claim(ClaimTypes.Role, role))).ToList();
         }
+
         private SigningCredentials CreateSigningCredentials()
         {
-            return new SigningCredentials(
-                new SymmetricSecurityKey(
-                    Encoding.ASCII.GetBytes("Mmx44IfURe84A/c4i0g2eY8m/DEhzUzXyyVPwKIo2SU=")
-                ),
-                SecurityAlgorithms.HmacSha256
-            );
+            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+            return new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
         }
     }
 }

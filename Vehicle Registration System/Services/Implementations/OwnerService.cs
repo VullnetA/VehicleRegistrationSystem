@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Vehicle_Registration_System.DTOs;
+using Vehicle_Registration_System.Models;
 using Vehicle_Registration_System.Repositories.Interfaces;
 using Vehicle_Registration_System.Services.Interfaces;
 
@@ -16,9 +17,9 @@ namespace Vehicle_Registration_System.Services.Implementations
             _ownerRepository = ownerRepository;
         }
 
-        public async Task AddOwner(InputOwner input)
+        public async Task<Owner> AddOwner(InputOwner input)
         {
-            await _ownerRepository.AddOwner(input);
+            return await _ownerRepository.AddOwner(input);
         }
 
         public async Task DeleteOwner(int id)

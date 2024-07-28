@@ -15,22 +15,24 @@ namespace Vehicle_Registration_System.Repositories.Implementations
             _context = context;
         }
 
-        public async Task AddOwner(InputOwner input)
+        public async Task<Owner> AddOwner(InputOwner input)
         {
-            Owner requestBody = new Owner();
-
-            requestBody.FirstName = input.FirstName;
-            requestBody.LastName = input.LastName;
-            requestBody.DateOfBirth = input.DateOfBirth;
-            requestBody.PlaceOfBirth = input.PlaceOfBirth;
-            requestBody.Email = input.Email;
-            requestBody.Phone = input.Phone;
-            requestBody.Gender = input.Gender;
-            requestBody.Address = input.Address;
-            requestBody.LicenseIssueDate = input.LicenseIssueDate;
+            Owner requestBody = new Owner
+            {
+                FirstName = input.FirstName,
+                LastName = input.LastName,
+                DateOfBirth = input.DateOfBirth,
+                PlaceOfBirth = input.PlaceOfBirth,
+                Email = input.Email,
+                Phone = input.Phone,
+                Gender = input.Gender,
+                Address = input.Address,
+                LicenseIssueDate = input.LicenseIssueDate
+            };
 
             _context.Owners.Add(requestBody);
             await _context.SaveChangesAsync();
+            return requestBody;
         }
 
         public async Task DeleteOwner(int id)
@@ -80,7 +82,6 @@ namespace Vehicle_Registration_System.Repositories.Implementations
             var owner = await _context.Owners.FindAsync(id);
             if (owner != null)
             {
-                owner.Email = edit.Email;
                 owner.Phone = edit.Phone;
                 owner.Address = edit.Address;
 

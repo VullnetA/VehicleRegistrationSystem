@@ -161,7 +161,6 @@ namespace Vehicle_Registration_System.Tests.RepositoryTests
                 var repository = new OwnerRepository(context);
                 var updateRequest = new EditOwner
                 {
-                    Email = "new.email@example.com",
                     Phone = "9998887777",
                     Address = "New Address"
                 };
@@ -170,7 +169,6 @@ namespace Vehicle_Registration_System.Tests.RepositoryTests
                 var updatedOwner = await context.Owners.FindAsync(1);
 
                 Assert.NotNull(updatedOwner);
-                Assert.Equal(updateRequest.Email, updatedOwner.Email);
                 Assert.Equal(updateRequest.Phone, updatedOwner.Phone);
                 Assert.Equal(updateRequest.Address, updatedOwner.Address);
             }
