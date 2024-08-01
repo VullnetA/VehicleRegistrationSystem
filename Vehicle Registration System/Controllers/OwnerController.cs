@@ -2,12 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using System.Security.Claims;
 using Vehicle_Registration_System.DTOs;
 using Vehicle_Registration_System.Models;
-using Vehicle_Registration_System.Repositories.Implementations;
-using Vehicle_Registration_System.Repositories.Interfaces;
-using Vehicle_Registration_System.Services.Implementations;
 using Vehicle_Registration_System.Services.Interfaces;
 
 namespace Vehicle_Registration_System.Controllers
@@ -22,7 +18,7 @@ namespace Vehicle_Registration_System.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public OwnerController(IOwnerService ownerService, IVehicleService vehicleService, IMemoryCache memoryCache, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager) // Change IdentityUser to ApplicationUser
+        public OwnerController(IOwnerService ownerService, IVehicleService vehicleService, IMemoryCache memoryCache, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _ownerService = ownerService;
             _vehicleService = vehicleService;
@@ -33,28 +29,30 @@ namespace Vehicle_Registration_System.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<Owner>>> GetAllOwners()
+        public async Task<ActionResult<IEnumerable<OwnerDto>>> GetAllOwners()
         {
-            if (_memoryCache.TryGetValue("AllOwners", out IEnumerable<Owner> owners))
+            if (_memoryCache.TryGetValue("AllOwners", out IEnumerable<OwnerDto> owners))
             {
                 return Ok(owners);
             }
 
             var response = await _ownerService.GetAllOwners();
+            if (response == null) return NotFound();
             _memoryCache.Set("AllOwners", response, TimeSpan.FromMinutes(10));
             return Ok(response);
         }
 
         [HttpGet("/owner/{id}")]
         [Authorize]
-        public async Task<ActionResult> GetOwnerById(int id)
+        public async Task<ActionResult<OwnerDto>> GetOwnerById(int id)
         {
-            if (_memoryCache.TryGetValue($"Owner_{id}", out Owner owner))
+            if (_memoryCache.TryGetValue($"Owner_{id}", out OwnerDto owner))
             {
                 return Ok(owner);
             }
 
             var response = await _ownerService.GetOwnerById(id);
+            if (response == null) return NotFound();
             _memoryCache.Set($"Owner_{id}", response, TimeSpan.FromMinutes(10));
             return Ok(response);
         }
@@ -93,6 +91,8 @@ namespace Vehicle_Registration_System.Controllers
         public async Task<ActionResult> DeleteOwner(int id)
         {
             await _ownerService.DeleteOwner(id);
+            _memoryCache.Remove($"Owner_{id}");
+            _memoryCache.Remove("AllOwners");
             return Ok();
         }
 
@@ -101,42 +101,46 @@ namespace Vehicle_Registration_System.Controllers
         public async Task<ActionResult> UpdateOwner(EditOwner editOwner, int id)
         {
             await _ownerService.UpdateOwner(editOwner, id);
+            _memoryCache.Remove($"Owner_{id}");
+            _memoryCache.Remove("AllOwners");
             return Ok();
         }
 
         [HttpGet("/findByCity/{placeOfBirth}")]
         [Authorize]
-        public async Task<ActionResult> FindByCity(string placeOfBirth)
+        public async Task<ActionResult<IEnumerable<OwnerDto>>> FindByCity(string placeOfBirth)
         {
-            if (_memoryCache.TryGetValue($"OwnersByCity_{placeOfBirth}", out IEnumerable<Owner> owners))
+            if (_memoryCache.TryGetValue($"OwnersByCity_{placeOfBirth}", out IEnumerable<OwnerDto> owners))
             {
                 return Ok(owners);
             }
 
             var response = await _ownerService.FindByCity(placeOfBirth);
+            if (response == null) return NotFound();
             _memoryCache.Set($"OwnersByCity_{placeOfBirth}", response, TimeSpan.FromMinutes(10));
             return Ok(response);
         }
 
         [HttpGet("/findByVehicle/{manufacturer}/{model}")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<Owner>>> FindOwnerByVehicle(string manufacturer, string model)
+        public async Task<ActionResult<IEnumerable<OwnerDto>>> FindOwnerByVehicle(string manufacturer, string model)
         {
-            if (_memoryCache.TryGetValue($"OwnersByVehicle_{manufacturer}_{model}", out IEnumerable<Owner> owners))
+            if (_memoryCache.TryGetValue($"OwnersByVehicle_{manufacturer}_{model}", out IEnumerable<OwnerDto> owners))
             {
                 return Ok(owners);
             }
 
             var response = await _ownerService.FindOwnerByVehicle(manufacturer, model);
+            if (response == null) return NotFound();
             _memoryCache.Set($"OwnersByVehicle_{manufacturer}_{model}", response, TimeSpan.FromMinutes(10));
             return Ok(response);
         }
 
         [HttpGet("/licensesByCity/{placeOfBirth}")]
         [Authorize]
-        public async Task<ActionResult<float>> GetLicensesByCity(string placeOfBirth)
+        public async Task<ActionResult<long>> GetLicensesByCity(string placeOfBirth)
         {
-            if (_memoryCache.TryGetValue($"LicensesByCity_{placeOfBirth}", out float count))
+            if (_memoryCache.TryGetValue($"LicensesByCity_{placeOfBirth}", out long count))
             {
                 return Ok(count);
             }
@@ -156,6 +160,7 @@ namespace Vehicle_Registration_System.Controllers
             }
 
             var response = await _ownerService.GetOwnersByName(name);
+            if (response == null) return NotFound();
             _memoryCache.Set($"OwnersByName_{name}", response, TimeSpan.FromMinutes(10));
             return Ok(response);
         }
