@@ -1,3 +1,5 @@
+Workflow file for this run
+.github/workflows/master_vehicle-registration24.yml at 07a3bd8
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
@@ -62,4 +64,3 @@ jobs:
           app-name: 'vehicle-registration24'
           slot-name: 'Production'
           package: .
-          
