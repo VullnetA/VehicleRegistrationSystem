@@ -2,9 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Vehicle_Registration_System.DTOs;
-using Vehicle_Registration_System.Models;
-using Vehicle_Registration_System.Repositories.Implementations;
-using Vehicle_Registration_System.Repositories.Interfaces;
 using Vehicle_Registration_System.Services.Interfaces;
 
 namespace Vehicle_Registration_System.Controllers
@@ -20,7 +17,6 @@ namespace Vehicle_Registration_System.Controllers
         {
             _vehicleService = vehicleService;
             _memoryCache = memoryCache;
-
         }
 
         [HttpGet]
@@ -33,11 +29,10 @@ namespace Vehicle_Registration_System.Controllers
             }
 
             var response = await _vehicleService.GetAllVehicles();
+            if (response == null) return NotFound();
             _memoryCache.Set("AllVehicles", response, TimeSpan.FromMinutes(10));
             return Ok(response);
         }
-
-
 
         [HttpGet("/vehicle/{id}")]
         [Authorize]
@@ -49,6 +44,7 @@ namespace Vehicle_Registration_System.Controllers
             }
 
             var response = await _vehicleService.GetVehicleById(id);
+            if (response == null) return NotFound();
             _memoryCache.Set($"Vehicle_{id}", response, TimeSpan.FromMinutes(10));
             return Ok(response);
         }
@@ -92,6 +88,7 @@ namespace Vehicle_Registration_System.Controllers
             }
 
             var response = await _vehicleService.FindAllByOwner(id);
+            if (response == null) return NotFound();
             _memoryCache.Set($"VehiclesByOwner_{id}", response, TimeSpan.FromMinutes(10));
             return Ok(response);
         }
@@ -106,6 +103,7 @@ namespace Vehicle_Registration_System.Controllers
             }
 
             var response = await _vehicleService.FindByYear(year);
+            if (response == null) return NotFound();
             _memoryCache.Set($"VehiclesByYear_{year}", response, TimeSpan.FromMinutes(10));
             return Ok(response);
         }
@@ -120,6 +118,7 @@ namespace Vehicle_Registration_System.Controllers
             }
 
             var response = await _vehicleService.FindByHorsepower(power);
+            if (response == null) return NotFound();
             _memoryCache.Set($"VehiclesWithMorePower_{power}", response, TimeSpan.FromMinutes(10));
             return Ok(response);
         }
@@ -134,6 +133,7 @@ namespace Vehicle_Registration_System.Controllers
             }
 
             var response = await _vehicleService.FindByFuelType(fuel);
+            if (response == null) return NotFound();
             _memoryCache.Set($"VehiclesByFuel_{fuel}", response, TimeSpan.FromMinutes(10));
             return Ok(response);
         }
@@ -148,6 +148,7 @@ namespace Vehicle_Registration_System.Controllers
             }
 
             var response = await _vehicleService.FindByBrand(brand);
+            if (response == null) return NotFound();
             _memoryCache.Set($"VehiclesByBrand_{brand}", response, TimeSpan.FromMinutes(10));
             return Ok(response);
         }
@@ -190,7 +191,7 @@ namespace Vehicle_Registration_System.Controllers
             }
 
             var response = await _vehicleService.CountByYear(year);
-            _memoryCache.Set($"CountByYear_ {year}", response, TimeSpan.FromMinutes(10));
+            _memoryCache.Set($"CountByYear_{year}", response, TimeSpan.FromMinutes(10));
             return Ok(response);
         }
 
@@ -260,6 +261,7 @@ namespace Vehicle_Registration_System.Controllers
             }
 
             var response = await _vehicleService.FindByLicensePlate(licensePlate);
+            if (response == null) return NotFound();
             _memoryCache.Set($"VehicleByLicensePlate_{licensePlate}", response, TimeSpan.FromMinutes(10));
             return Ok(response);
         }

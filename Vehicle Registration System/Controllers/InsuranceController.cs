@@ -1,15 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Caching.Memory;
 using Vehicle_Registration_System.DTOs;
 using Vehicle_Registration_System.Models;
-using Vehicle_Registration_System.Repositories.Interfaces;
 using Vehicle_Registration_System.Services.Interfaces;
 
 namespace Vehicle_Registration_System.Controllers
 {
-
     [ApiController]
     [Route("api/[controller]")]
     public class InsuranceController : ControllerBase
@@ -33,6 +30,7 @@ namespace Vehicle_Registration_System.Controllers
             }
 
             var response = await _insuranceService.GetAllInsurances();
+            if (response == null) return NotFound();
             _memoryCache.Set("AllInsurances", response, TimeSpan.FromMinutes(10));
             return Ok(response);
         }
@@ -47,6 +45,7 @@ namespace Vehicle_Registration_System.Controllers
             }
 
             var response = await _insuranceService.FindInsuranceById(id);
+            if (response == null) return NotFound();
             _memoryCache.Set($"Insurance_{id}", response, TimeSpan.FromMinutes(10));
             return Ok(response);
         }
@@ -61,6 +60,7 @@ namespace Vehicle_Registration_System.Controllers
             }
 
             var response = await _insuranceService.FindInsuranceByVehicleId(id);
+            if (response == null) return NotFound();
             _memoryCache.Set($"InsuranceVehicle_{id}", response, TimeSpan.FromMinutes(10));
             return Ok(response);
         }
@@ -70,15 +70,17 @@ namespace Vehicle_Registration_System.Controllers
         public async Task<ActionResult> AddInsurance(MakeInsurance make)
         {
             await _insuranceService.AddInsurance(make);
+            _memoryCache.Remove("AllInsurances");
             return Ok();
         }
-
 
         [HttpDelete("/insurance/{id}")]
         [Authorize]
         public async Task<ActionResult> DeleteInsurance(int id)
         {
             await _insuranceService.DeleteInsurance(id);
+            _memoryCache.Remove($"Insurance_{id}");
+            _memoryCache.Remove("AllInsurances");
             return Ok();
         }
 
@@ -106,6 +108,7 @@ namespace Vehicle_Registration_System.Controllers
             }
 
             var response = await _insuranceService.FindExpiredInsurance();
+            if (response == null) return NotFound();
             _memoryCache.Set("ExpiredInsurances", response, TimeSpan.FromMinutes(10));
             return Ok(response);
         }
@@ -115,6 +118,8 @@ namespace Vehicle_Registration_System.Controllers
         public async Task<ActionResult> UpdateInsurance(EditInsurance edit, int id)
         {
             await _insuranceService.UpdateInsurance(edit, id);
+            _memoryCache.Remove($"Insurance_{id}");
+            _memoryCache.Remove("AllInsurances");
             return Ok();
         }
     }

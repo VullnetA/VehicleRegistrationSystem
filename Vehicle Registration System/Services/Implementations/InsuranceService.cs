@@ -2,7 +2,6 @@
 using Vehicle_Registration_System.DTOs;
 using Vehicle_Registration_System.Enums;
 using Vehicle_Registration_System.Models;
-using Vehicle_Registration_System.Repositories.Implementations;
 using Vehicle_Registration_System.Repositories.Interfaces;
 using Vehicle_Registration_System.Services.Interfaces;
 
@@ -46,44 +45,44 @@ namespace Vehicle_Registration_System.Services.Implementations
 
         public async Task<IEnumerable<VehicleDto>> FindExpiredInsurance()
         {
-            var exipredInsurances = await _insuranceRepository.FindExpiredInsurance();
-            var response = exipredInsurances?.Select(element =>
+            var expiredInsurances = await _insuranceRepository.FindExpiredInsurance();
+            if (expiredInsurances == null) return Enumerable.Empty<VehicleDto>();
+
+            return expiredInsurances.Select(element =>
             {
-                VehicleDto vehicleDto = new VehicleDto();
+                var vehicleDto = new VehicleDto();
                 return _mapper.Map(element, vehicleDto);
             });
-            return response;
         }
 
         public async Task<InsuranceDto> FindInsuranceById(int id)
         {
             var insurance = await _insuranceRepository.FindInsuranceById(id);
+            if (insurance == null) return null;
 
-            InsuranceDto insuranceDto = new InsuranceDto();
-
-            var response = _mapper.Map(insurance, insuranceDto);
-            return response;
+            var insuranceDto = new InsuranceDto();
+            return _mapper.Map(insurance, insuranceDto);
         }
 
         public async Task<InsuranceDto> FindInsuranceByVehicleId(int id)
         {
             var insurance = await _insuranceRepository.FindInsuranceByVehicleId(id);
+            if (insurance == null) return null;
 
-            InsuranceDto insuranceDto = new InsuranceDto();
-
-            var response = _mapper.Map(insurance, insuranceDto);
-            return response;
+            var insuranceDto = new InsuranceDto();
+            return _mapper.Map(insurance, insuranceDto);
         }
 
         public async Task<IEnumerable<InsuranceDto>> GetAllInsurances()
         {
             var insurances = await _insuranceRepository.GetAllInsurances();
-            var response = insurances?.Select(element =>
+            if (insurances == null) return Enumerable.Empty<InsuranceDto>();
+
+            return insurances.Select(element =>
             {
-                InsuranceDto insuranceDto = new InsuranceDto();
+                var insuranceDto = new InsuranceDto();
                 return _mapper.Map(element, insuranceDto);
             });
-            return response;
         }
 
         public async Task UpdateInsurance(EditInsurance edit, int id)
@@ -108,11 +107,11 @@ namespace Vehicle_Registration_System.Services.Implementations
 
             var powerFees = new List<(int min, int max, float fee)>
             {
-            (0, 100, 500),
-            (101, 200, 700),
-            (201, 300, 800),
-            (301, 400, 900),
-            (401, int.MaxValue, 1000)
+                (0, 100, 500),
+                (101, 200, 700),
+                (201, 300, 800),
+                (301, 400, 900),
+                (401, int.MaxValue, 1000)
             };
 
             categoryFees.TryGetValue(vehicle.Category, out var categoryFee);

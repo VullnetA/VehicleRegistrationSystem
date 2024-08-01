@@ -11,7 +11,7 @@ namespace Vehicle_Registration_System.Services.Implementations
         public readonly IMapper _mapper;
         public readonly IOwnerRepository _ownerRepository;
 
-        public OwnerService (IMapper mapper, IOwnerRepository ownerRepository)
+        public OwnerService(IMapper mapper, IOwnerRepository ownerRepository)
         {
             _mapper = mapper;
             _ownerRepository = ownerRepository;
@@ -30,37 +30,37 @@ namespace Vehicle_Registration_System.Services.Implementations
         public async Task<IEnumerable<OwnerDto>> FindByCity(string placeOfBirth)
         {
             var owners = await _ownerRepository.FindByCity(placeOfBirth);
-            var response = owners?.Select(element =>
-            {
-                OwnerDto ownerDto = new OwnerDto();
+            if (owners == null) return Enumerable.Empty<OwnerDto>();
 
+            return owners.Select(element =>
+            {
+                var ownerDto = new OwnerDto();
                 return _mapper.Map(element, ownerDto);
             });
-            return response;
         }
 
         public async Task<IEnumerable<OwnerDto>> FindOwnerByVehicle(string manufacturer, string model)
         {
             var owners = await _ownerRepository.FindOwnerByVehicle(manufacturer, model);
-            var response = owners?.Select(element =>
-            {
-                OwnerDto ownerDto = new OwnerDto();
+            if (owners == null) return Enumerable.Empty<OwnerDto>();
 
+            return owners.Select(element =>
+            {
+                var ownerDto = new OwnerDto();
                 return _mapper.Map(element, ownerDto);
             });
-            return response;
         }
 
         public async Task<IEnumerable<OwnerDto>> GetAllOwners()
         {
             var owners = await _ownerRepository.GetAllOwners();
-            var response = owners?.Select(element =>
-            {
-                OwnerDto ownerDto = new OwnerDto();
+            if (owners == null) return Enumerable.Empty<OwnerDto>();
 
+            return owners.Select(element =>
+            {
+                var ownerDto = new OwnerDto();
                 return _mapper.Map(element, ownerDto);
             });
-            return response;
         }
 
         public async Task<long> GetLicensesByCity(string placeOfBirth)
@@ -71,23 +71,22 @@ namespace Vehicle_Registration_System.Services.Implementations
         public async Task<OwnerDto> GetOwnerById(int id)
         {
             var owner = await _ownerRepository.GetOwnerById(id);
+            if (owner == null) return null;
 
-            OwnerDto ownerDto = new OwnerDto();
-
-            var response = _mapper.Map(owner, ownerDto);
-            return response;
+            var ownerDto = new OwnerDto();
+            return _mapper.Map(owner, ownerDto);
         }
 
         public async Task<IEnumerable<OwnerDto>> GetOwnersByName(string name)
         {
             var owners = await _ownerRepository.GetOwnersByName(name);
-            var response = owners?.Select(element =>
-            {
-                OwnerDto ownerDto = new OwnerDto();
+            if (owners == null) return Enumerable.Empty<OwnerDto>();
 
+            return owners.Select(element =>
+            {
+                var ownerDto = new OwnerDto();
                 return _mapper.Map(element, ownerDto);
             });
-            return response;
         }
 
         public async Task UpdateOwner(EditOwner edit, int id)
