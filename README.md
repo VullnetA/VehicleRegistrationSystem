@@ -26,7 +26,7 @@ This is the backend service for my personal Vehicle Registration System project,
 1. **Clone the Repository:**
 
    ```bash
-   git clone [https://github.com/VullnetA/VehicleRegistrationSystem.git](https://github.com/VullnetA/VehicleRegistrationSystem.git)
+   git clone https://github.com/VullnetA/VehicleRegistrationSystem.git
    cd VehicleRegistrationSystem
 
 2. **Configure the Database:**
