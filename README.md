@@ -30,8 +30,8 @@ This is the backend service for my personal Vehicle Registration System project,
    cd VehicleRegistrationSystem
 
 2. **Configure the Database:**
-   - Create a PostgreSQL database for the application.
-   - Update the connection string in **appsettings.json** with your PostgreSQL database details:
+   1. Create a PostgreSQL database for the application.
+   2. Update the connection string in **appsettings.json** with your PostgreSQL database details:
 
     ```json
    "ConnectionStrings": {
@@ -101,9 +101,8 @@ This is the backend service for my personal Vehicle Registration System project,
 - **GET /count** - Count total number of insurances.
 - **GET /expiredinsurances** - Count total number of expired insurances.
 
-### Testing
-**Run Tests:**
-Execute the following command to run unit tests
+### Run Tests
+Execute the following command to run unit tests:
 
 
     dotnet test
