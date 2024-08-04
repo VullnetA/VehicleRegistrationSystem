@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is the backend service for the Vehicle Registration System, developed as part of my personal Service-Oriented Architecture course. The backend is built using ASP.NET Core and serves as the main API for managing vehicle registrations, owners, and insurances. It uses PostgreSQL for database management and provides secure authentication and authorization through the Identity Framework and JWT tokens.
+This is the backend service for my personal Vehicle Registration System project, developed as part of the course: Service-Oriented Architecture. The backend is built using ASP.NET Core and serves as the main API for managing vehicle registrations, owners, and insurances. It uses PostgreSQL for database management and provides secure authentication and authorization through the Identity Framework and JWT tokens.
 
 ## Technologies Used
 
