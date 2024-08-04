@@ -30,8 +30,8 @@ This is the backend service for my personal Vehicle Registration System project,
    cd VehicleRegistrationSystem
 
 2. **Configure the Database:**
-   1. Create a PostgreSQL database for the application.
-   2. Update the connection string in **appsettings.json** with your PostgreSQL database details:
+   - Create a PostgreSQL database for the application.
+   - Update the connection string in **appsettings.json** with your PostgreSQL database details:
 
     ```json
    "ConnectionStrings": {
