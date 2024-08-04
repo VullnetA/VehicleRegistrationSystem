@@ -105,7 +105,7 @@ This is the backend service for the Vehicle Registration System, developed as pa
 **Run Tests:**
 Execute the following command to run unit tests
 
-    ```bash
+
     dotnet test
 
 ### Contributing
@@ -119,4 +119,3 @@ We welcome contributions! If you want to contribute to this project, please foll
 
 ### Contact
 For any inquiries or support, please contact me at vullnetazizi9@gmail.com.
-
