@@ -39,19 +39,19 @@ This is the backend service for my personal Vehicle Registration System project,
    }
    
 3. **Apply Migrations:**
-   Run the following command to apply database migrations:
+   - Run the following command to apply database migrations:
    
    ```bash
    dotnet ef database update
 
 4. **Run the application:**
-   Use the following command to run the application:
+   - Use the following command to run the application:
 
    ```bash
    dotnet run
 
 5. **Access the API:**
-   The API will be available at **http://localhost:5000**
+   - The API will be available at **http://localhost:5000**
 
 ## Usage Guidelines
 
