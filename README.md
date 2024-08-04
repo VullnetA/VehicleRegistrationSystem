@@ -107,7 +107,7 @@ Execute the following command to run unit tests:
 
     dotnet test
 
-### Contributing
+## Contributing
 We welcome contributions! If you want to contribute to this project, please follow these steps:
 
 1. Fork the repository.
@@ -116,5 +116,5 @@ We welcome contributions! If you want to contribute to this project, please foll
 4. Push to the branch (**'git push origin feature-branch'**).
 5. Open a pull request.
 
-### Contact
+## Contact
 For any inquiries or support, please contact me at vullnetazizi9@gmail.com.
