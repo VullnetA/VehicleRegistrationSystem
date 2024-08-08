@@ -20,7 +20,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<VehicleDto>>> GetAllVehicles()
         {
             if (_memoryCache.TryGetValue("AllVehicles", out IEnumerable<VehicleDto> vehicles))
@@ -35,7 +35,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/vehicle/{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Owner")]
         public async Task<ActionResult<VehicleDto>> GetVehicleById(int id)
         {
             if (_memoryCache.TryGetValue($"Vehicle_{id}", out VehicleDto vehicle))
@@ -50,7 +50,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> AddVehicle(RegisterVehicle register)
         {
             await _vehicleService.AddVehicle(register);
@@ -59,7 +59,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpDelete("/vehicle/{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteVehicle(int id)
         {
             await _vehicleService.DeleteVehicle(id);
@@ -69,7 +69,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpPut("/vehicle/{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> UpdateVehicle(EditVehicle editVehicle, int id)
         {
             await _vehicleService.UpdateVehicle(editVehicle, id);
@@ -79,7 +79,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/vehiclesbyowner/{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Owner")]
         public async Task<ActionResult<IEnumerable<VehicleDto>>> GetVehiclesByOwner(int id)
         {
             if (_memoryCache.TryGetValue($"VehiclesByOwner_{id}", out IEnumerable<VehicleDto> vehicles))
@@ -94,7 +94,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/vehiclesbyyear/{year}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<VehicleDto>>> GetVehiclesByYear(int year)
         {
             if (_memoryCache.TryGetValue($"VehiclesByYear_{year}", out IEnumerable<VehicleDto> vehicles))
@@ -109,7 +109,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/vehiclespower/{power}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<VehicleDto>>> GetVehiclesWithMorePower(int power)
         {
             if (_memoryCache.TryGetValue($"VehiclesWithMorePower_{power}", out IEnumerable<VehicleDto> vehicles))
@@ -124,7 +124,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/vehiclesbyfuel/{fuel}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<VehicleDto>>> GetVehiclesByFuel(string fuel)
         {
             if (_memoryCache.TryGetValue($"VehiclesByFuel_{fuel}", out IEnumerable<VehicleDto> vehicles))
@@ -139,7 +139,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/vehiclesbybrand/{brand}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<VehicleDto>>> GetVehiclesByBrand(string brand)
         {
             if (_memoryCache.TryGetValue($"VehiclesByBrand_{brand}", out IEnumerable<VehicleDto> vehicles))
@@ -154,7 +154,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/countbybrand/{brand}")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Owner")]
         public async Task<ActionResult<long>> CountVehiclesByBrand(string brand)
         {
             if (_memoryCache.TryGetValue($"CountByBrand_{brand}", out long count))
@@ -168,7 +168,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/countbyfueltype/{fuel}")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Owner")]
         public async Task<ActionResult<long>> CountVehiclesByFuelType(string fuel)
         {
             if (_memoryCache.TryGetValue($"CountByFuelType_{fuel}", out long count))
@@ -182,7 +182,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/countbyyear/{year}")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Owner")]
         public async Task<ActionResult<long>> CountVehiclesByYear(int year)
         {
             if (_memoryCache.TryGetValue($"CountByYear_{year}", out long count))
@@ -196,7 +196,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/countbycategory/{category}")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Owner")]
         public async Task<ActionResult<long>> CountVehiclesByCategory(string category)
         {
             if (_memoryCache.TryGetValue($"CountByCategory_{category}", out long count))
@@ -210,7 +210,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/countunregistered")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<long>> CountUnregisteredVehicles()
         {
             if (_memoryCache.TryGetValue("CountUnregistered", out long count))
@@ -224,7 +224,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/countregistered")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<long>> CountRegisteredVehicles()
         {
             if (_memoryCache.TryGetValue("CountRegistered", out long count))
@@ -238,7 +238,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/counttransmission/{transmission}")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Owner")]
         public async Task<ActionResult<long>> CountTransmission(string transmission)
         {
             if (_memoryCache.TryGetValue($"CountTransmission_{transmission}", out long count))
@@ -252,7 +252,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/licenseplate/{licensePlate}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<VehicleDto>> FindVehicleByLicensePlate(string licensePlate)
         {
             if (_memoryCache.TryGetValue($"VehicleByLicensePlate_{licensePlate}", out VehicleDto vehicle))
@@ -267,7 +267,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/checkregistration/{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<bool>> CheckVehicleRegistration(int id)
         {
             if (_memoryCache.TryGetValue($"CheckRegistration_{id}", out bool isRegistered))

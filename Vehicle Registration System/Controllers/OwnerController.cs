@@ -28,7 +28,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<OwnerDto>>> GetAllOwners()
         {
             if (_memoryCache.TryGetValue("AllOwners", out IEnumerable<OwnerDto> owners))
@@ -43,7 +43,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/owner/{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<OwnerDto>> GetOwnerById(int id)
         {
             if (_memoryCache.TryGetValue($"Owner_{id}", out OwnerDto owner))
@@ -58,7 +58,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> AddOwner(InputOwner request)
         {
             var owner = await _ownerService.AddOwner(request);
@@ -87,7 +87,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpDelete("/owner/{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteOwner(int id)
         {
             await _ownerService.DeleteOwner(id);
@@ -97,7 +97,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpPut("/owner/{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> UpdateOwner(EditOwner editOwner, int id)
         {
             await _ownerService.UpdateOwner(editOwner, id);
@@ -107,7 +107,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/findByCity/{placeOfBirth}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<OwnerDto>>> FindByCity(string placeOfBirth)
         {
             if (_memoryCache.TryGetValue($"OwnersByCity_{placeOfBirth}", out IEnumerable<OwnerDto> owners))
@@ -122,7 +122,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/findByVehicle/{manufacturer}/{model}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<OwnerDto>>> FindOwnerByVehicle(string manufacturer, string model)
         {
             if (_memoryCache.TryGetValue($"OwnersByVehicle_{manufacturer}_{model}", out IEnumerable<OwnerDto> owners))
@@ -137,7 +137,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/licensesByCity/{placeOfBirth}")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Owner")]
         public async Task<ActionResult<long>> GetLicensesByCity(string placeOfBirth)
         {
             if (_memoryCache.TryGetValue($"LicensesByCity_{placeOfBirth}", out long count))
@@ -151,7 +151,7 @@ namespace Vehicle_Registration_System.Controllers
         }
 
         [HttpGet("/searchByName/{name}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<OwnerDto>>> GetOwnersByName(string name)
         {
             if (_memoryCache.TryGetValue($"OwnersByName_{name}", out IEnumerable<OwnerDto> owners))
