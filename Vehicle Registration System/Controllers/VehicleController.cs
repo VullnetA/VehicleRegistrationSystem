@@ -55,6 +55,14 @@ namespace Vehicle_Registration_System.Controllers
         {
             await _vehicleService.AddVehicle(register);
             _memoryCache.Remove("AllVehicles");
+            _memoryCache.Remove("CountUnregistered");
+            _memoryCache.Remove("CountRegistered");
+            _memoryCache.Remove($"CountByBrand_{register.Manufacturer}");
+            _memoryCache.Remove($"CountTransmission_{register.Transmission}");
+            _memoryCache.Remove($"CountByFuelType_{register.Fuel}");
+            _memoryCache.Remove($"CountByYear_{register.Year}");
+            _memoryCache.Remove($"CountByCategory_{register.Category}");
+
             return Ok();
         }
 
