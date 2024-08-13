@@ -83,8 +83,14 @@ namespace Vehicle_Registration_System.Controllers
             }
             await _userManager.AddToRoleAsync(user, "Owner");
 
+            _memoryCache.Remove("AllOwners");
+            _memoryCache.Remove($"Owner_{owner.Id}");
+            _memoryCache.Remove($"LicensesByCity_{request.PlaceOfBirth}");
+
+
             return Ok(new { OwnerId = owner.Id });
         }
+
 
         [HttpDelete("/owner/{id}")]
         [Authorize(Roles = "Admin")]
